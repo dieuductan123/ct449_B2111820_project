@@ -1,54 +1,69 @@
 const Book = require('../models/Book');
-
 // Thêm sách mới
 exports.addBook = async(req, res) => {
   try {
-    const newBook = new Book(req.body);
+    const { maSach, tenSach, donGia, soQuyen, namXuatBan, maNXB, tacGia } =
+      req.body;
+    const newBook = new Book({
+      maSach,
+      tenSach,
+      donGia,
+      soQuyen,
+      namXuatBan,
+      maNXB,
+      tacGia,
+    });
     await newBook.save();
-    res.status(201).json({ message: 'Sách được thêm thành công', data: newBook });
+    res.status(201).json({ message: "Book added successfully", data: newBook });
   } catch(error) {
-    res.status(500).json({ message: 'Lỗi khi thêm sách', error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
 // Cập nhật thông tin sách
 exports.updateBook = async(req, res) => {
-  const { id } = req.params;
   try {
-    const updatedBook = await Book.findByIdAndUpdate(id, req.body, { new: true });
-    if (!updatedBook) {
-      return res.status(404).json({ message: 'Không tìm thấy sách để cập nhật'});
-    }
-    res.status(200).json({ message: 'Cập nhật thông tin sách thành công', data: updatedBook });
+    const updatedBook = await Book.findOneAndUpdate(
+      { maSach: req.params.maSach },
+      req.body,
+      { new: true }
+    );
+    if (!updatedBook)
+      return res.status(404).json({ message: "Book not found" });
+    res.json({ message: "Book updated successfully", data: updatedBook });
   } catch(error) {
-    res.status(500).json({ message: 'Lỗi khi cập nhật sách', error: error.message }); 
+      res.status(400).json({ error: error.message });
   }
 };
 
 // Xóa sách
 exports.deleteBook = async (req, res) => {
   try {
-    const deletedBook = await Book.findByIdAndDelete(req.params.id);
-    if (!deletedBook) return res.status(404).json({ message: 'Không tìm thấy sách' });
-    res.status(200).json({ message: 'Xóa sách thành công' });
+    const deletedBook = await Book.findOneAndDelete({
+      maSach: req.params.maSach,
+    });
+    if (!deletedBook)
+      return res.status(404).json({ message: "Book not found" });
+    res.json({ message: "Book deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi khi xóa sách', error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
 // Tìm kiếm sách theo tên, tác giả hoặc thể loại
 exports.searchBooks = async (req, res) => {
-  const { query } = req.query;
   try {
-    const books = await Book.find({
-      $or: [
-        { bookName: { $regex: query, $options: 'i' } },
-        { author: { $regex: query, $options: 'i' } },
-      ]
-    });
-    res.status(200).json({ message: 'Kết quả tìm kiếm', data: books });
+     const { tenSach, tacGia, maNXB } = req.query;
+     const query = {};
+
+     if (tenSach) query.tenSach = { $regex: tenSach, $options: "i" };
+     if (tacGia) query.tacGia = { $regex: tacGia, $options: "i" };
+     if (maNXB) query.maNXB = maNXB;
+
+     const books = await Book.find(query);
+     res.json({ data: books });
   } catch (error) {
-    res.status(500).json({ message: 'Lỗi khi tìm kiếm sách', error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 

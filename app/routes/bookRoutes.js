@@ -7,10 +7,10 @@ const bookController = require('../controllers/bookControllers');
 router.post('/add', bookController.addBook);
 
 // Cập nhật sách
-router.put('/update/:id', bookController.updateBook);
+router.put('/update/:maSach', bookController.updateBook);
 
 // Route để xóa sách
-router.delete('/delete/:id', bookController.deleteBook);
+router.delete('/delete/:maSach', bookController.deleteBook);
 
 //Tìm kiếm sách
 router.get('/search', bookController.searchBooks);
