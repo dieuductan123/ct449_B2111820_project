@@ -1,12 +1,18 @@
-// routes/docgia.js
+// routes/readerRoutes.js
 const express = require("express");
 const router = express.Router();
-const ReaderController = require("../controllers/ReaderController");
+const readerController = require("../controllers/readerControllers");
 
 // Đăng ký độc giả mới
-router.post("/", ReaderController.signupReader);
+router.post("/", readerController.signupReader);
 
 // Cập nhật thông tin độc giả
-router.put("/:maDocGia", ReaderController.updateReader);
+router.put("/:maDocGia", readerController.updateReader);
+
+// Xóa độc giả
+router.delete("/:maDocGia", readerController.deleteReader);
+
+// Tìm kiếm độc giả
+router.get("/", readerController.findReader);
 
 module.exports = router;

@@ -3,16 +3,17 @@ const express = require('express');
 const router = express.Router();
 const bookController = require('../controllers/bookControllers');
 
-// Thêm sách
-router.post('/add', bookController.addBook);
+router
+  .route('/')
+  .get(bookController.getAllBooks)     // Lấy danh sách tất sách
+  .post(bookController.createBook)       // Thêm sách mới
+  .delete(bookController.deleteAllBooks); // Xóa tất cả sách
 
-// Cập nhật sách
-router.put('/update/:maSach', bookController.updateBook);
-
-// Route để xóa sách
-router.delete('/delete/:maSach', bookController.deleteBook);
-
-//Tìm kiếm sách
-router.get('/search', bookController.searchBooks);
+router
+  .route('/:maSach')
+  .put(bookController.updateBook)     // Sửa sách theo MaSach
+  .delete(bookController.deleteBook); // Xóa sách theo MaSach
+  
+router.get('/search', bookController.searchBooks); //Tìm kiếm sách theo 
 
 module.exports = router;
