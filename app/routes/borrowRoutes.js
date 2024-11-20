@@ -1,15 +1,18 @@
-// routes/muontra.js
+// routes/borrowRoutes.js
 const express = require("express");
-const router = express.Router();
 const borrowController = require("../controllers/borrowControllers");
+const router = express.Router();
 
 // Yêu cầu mượn sách
-router.post("/borrow", borrowController.borrowRequest);
+router.post("/", borrowController.borrowBook);
 
 // Xác nhận trả sách
-router.post("/return", borrowController.returnBook);
+router.put("/return/:borrowId", borrowController.returnBook);
 
-// Xem lịch sử mượn sách
-router.get("/history/:maDocGia", borrowController.watchHistory);
+// Lịch sử mượn sách của độc giả
+router.get("/history/:maDocGia", borrowController.getHistory);
+
+// Thống kê mượn sách
+router.get("/statistics", borrowController.getStatistics);
 
 module.exports = router;
